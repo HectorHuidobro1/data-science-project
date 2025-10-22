@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h2 class="h5 mb-0">Tareas activas</h2>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('manage_tasks') }}">Gestionar</a>
+        </div>
+        <div class="card-body">
+          {% if tasks %}
+            <ul class="list-group list-group-flush">
+              {% for task in tasks %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div>
+                    <div class="fw-semibold {% if task.completed %}text-decoration-line-through text-muted{% endif %}">{{ task.title }}</div>
+                    {% if task.description %}
+                      <div class="small text-muted">{{ task.description }}</div>
+                    {% endif %}
+                    <div class="small text-muted">
+                      {% if task.assignee %}
+                        Responsable: {{ task.assignee.name }} ·
+                      {% endif %}
+                      Creada: {{ task.created_at.strftime('%d/%m/%Y') }}
+                      {% if task.due_date %}
+                        · Vence: {{ task.due_date.strftime('%d/%m/%Y') }}
+                      {% endif %}
+                    </div>
+                  </div>
+                  <span class="badge bg-{{ 'success' if task.completed else 'warning text-dark' }}">{{ 'Completada' if task.completed else 'Pendiente' }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">Aún no hay tareas registradas. Comience creando una desde el módulo de tareas.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h2 class="h5 mb-0">Últimos archivos</h2>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('upload') }}">Subir archivo</a>
+        </div>
+        <div class="card-body">
+          {% if uploads %}
+            <div class="list-group">
+              {% for upload in uploads %}
+                <a class="list-group-item list-group-item-action" href="{{ url_for('uploaded_file', filename=upload.filename) }}" target="_blank">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h3 class="h6 mb-1">{{ upload.original_name }}</h3>
+                    <small class="text-muted">{{ upload.uploaded_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                  </div>
+                  <p class="mb-1 small text-muted">Subido por {{ upload.user.name }}</p>
+                  {% if upload.description %}
+                    <p class="mb-0 small">{{ upload.description }}</p>
+                  {% endif %}
+                </a>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted mb-0">Aún no se han cargado archivos. Utilice el botón “Subir archivo” para compartir documentos o fotografías con el equipo.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="h5 mb-0">Colaboradores activos</h2>
+      </div>
+      <div class="card-body">
+        {% if users %}
+          <div class="d-flex flex-wrap gap-2">
+            {% for user in users %}
+              <span class="badge rounded-pill text-bg-secondary">{{ user.name }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted mb-0">No hay usuarios registrados todavía. Se crearán automáticamente cuando suban archivos o se asignen tareas.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

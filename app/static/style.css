@@ -1,0 +1,21 @@
+body {
+  background-color: #f5f7fb;
+}
+
+main {
+  min-height: 70vh;
+}
+
+.alert-stack .alert + .alert {
+  margin-top: 0.75rem;
+}
+
+.card-header h1,
+.card-header h2 {
+  margin: 0;
+}
+
+table td,
+table th {
+  vertical-align: middle;
+}

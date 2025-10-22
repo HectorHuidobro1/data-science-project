@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="row g-4">
+    <div class="col-lg-5 col-xl-4">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="h5 mb-0">Crear nueva tarea</h1>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            <div class="mb-3">
+              <label class="form-label" for="title">Título</label>
+              <input class="form-control" type="text" id="title" name="title" placeholder="Ej. Revisar inventario" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="description">Descripción</label>
+              <textarea class="form-control" id="description" name="description" rows="3" placeholder="Detalles de la tarea"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="due_date">Fecha límite</label>
+              <input class="form-control" type="date" id="due_date" name="due_date">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="assignee">Asignar a</label>
+              <input class="form-control" type="text" id="assignee" name="assignee" list="users" placeholder="Nombre del responsable">
+              <datalist id="users">
+                {% for user in users %}
+                  <option value="{{ user.name }}"></option>
+                {% endfor %}
+              </datalist>
+              <div class="form-text">Si el colaborador no existe se añadirá automáticamente.</div>
+            </div>
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit">Guardar tarea</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-7 col-xl-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="h5 mb-0">Listado de tareas</h2>
+        </div>
+        <div class="card-body">
+          {% if tasks %}
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Tarea</th>
+                    <th>Responsable</th>
+                    <th>Fecha límite</th>
+                    <th>Estado</th>
+                    <th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for task in tasks %}
+                    <tr class="{% if task.completed %}table-success{% endif %}">
+                      <td>
+                        <div class="fw-semibold">{{ task.title }}</div>
+                        {% if task.description %}
+                          <div class="small text-muted">{{ task.description }}</div>
+                        {% endif %}
+                      </td>
+                      <td>{{ task.assignee.name if task.assignee else 'Sin asignar' }}</td>
+                      <td>
+                        {% if task.due_date %}
+                          {{ task.due_date.strftime('%d/%m/%Y') }}
+                        {% else %}
+                          <span class="text-muted">Sin fecha</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <span class="badge bg-{{ 'success' if task.completed else 'warning text-dark' }}">{{ 'Completada' if task.completed else 'Pendiente' }}</span>
+                      </td>
+                      <td class="text-end">
+                        <form method="post" action="{{ url_for('toggle_task', task_id=task.id) }}">
+                          <button class="btn btn-sm btn-outline-secondary" type="submit">{{ 'Marcar pendiente' if task.completed else 'Marcar completada' }}</button>
+                        </form>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="text-muted mb-0">No hay tareas registradas. Utilice el formulario para crear la primera.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
