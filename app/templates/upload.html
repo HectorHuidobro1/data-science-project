@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="h5 mb-0">Compartir un archivo</h1>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="mb-3">
+              <label class="form-label" for="username">Nombre del colaborador</label>
+              <input class="form-control" type="text" id="username" name="username" list="user-list" placeholder="Ej. Ana Pérez" required>
+              <datalist id="user-list">
+                {% for user in users %}
+                  <option value="{{ user.name }}"></option>
+                {% endfor %}
+              </datalist>
+              <div class="form-text">Si el usuario no existe se creará automáticamente.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="file">Archivo</label>
+              <input class="form-control" type="file" id="file" name="file" accept="image/*,.pdf,.docx,.xlsx" required>
+              <div class="form-text">Formatos permitidos: imágenes (JPG, PNG, GIF) y documentos (PDF, DOCX, XLSX).</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="description">Descripción (opcional)</label>
+              <textarea class="form-control" id="description" name="description" rows="3" placeholder="Describe el contenido o el objetivo del archivo"></textarea>
+            </div>
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit">Subir archivo</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
